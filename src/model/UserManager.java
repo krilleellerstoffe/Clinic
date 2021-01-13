@@ -398,9 +398,9 @@ public class UserManager {
             statement.setString(1, special);
             statement.setDouble(2, cost);
 
-            if(statement.execute()){
-                success = true;
-            }
+            statement.execute();
+            success = true;
+
             statement.close();
 
         } catch (SQLException e) {
@@ -461,11 +461,11 @@ public class UserManager {
         }
         return medicalRecord;
     }
-    public boolean createMedicalRecord(int medicalId, String diagnosis, String description) {
+    public boolean createMedicalRecord(int medicalId, String diagnosis, String description, String drugName) {
 
         boolean success = false;
         try {
-            String query = "{call insert_medical_record( ?, ?, ? ,?)}";
+            String query = "{call insert_medical_record( ?, ?, ? ,?, ?)}";
 
             CallableStatement statement = conn.prepareCall(query);
 
@@ -473,14 +473,36 @@ public class UserManager {
             statement.setInt(2, selectedDoctor.getEmployeeId());
             statement.setString(3, diagnosis);
             statement.setString(4, description);
+            statement.setString(5, "");
 
-            statement.execute();
+
+            ResultSet resultSet = statement.executeQuery();
+            String recordId = "";
+            while (resultSet.next()) {
+                recordId = resultSet.getString(1);
+            }
+            statement.close();
+            query = "{call insert_drug(?, ?)}";
+
+            statement = conn.prepareCall(query);
+
+            statement.setString(1, recordId);
+            statement.setString(2, drugName);
+
             success = true;
             statement.close();
+
         } catch (SQLException e) {
             success = false;
             e.printStackTrace();
         }
+
+
+
+
+
+
+
         return success;
     }
     public String getAppointments() {

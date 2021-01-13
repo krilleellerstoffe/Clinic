@@ -177,7 +177,8 @@ public class MenuController {
         int medicalId = view.getMedicalId();
         String diagnosis = view.getDiagnosis();
         String description = view.getDescription();
-        if(model.createMedicalRecord(medicalId, diagnosis, description)){
+        String drugName = view.getDrugName();
+        if(model.createMedicalRecord(medicalId, diagnosis, description, drugName)){
             view.printString("Record successfully created");
         }
         else{
