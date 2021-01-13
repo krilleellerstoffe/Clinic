@@ -458,12 +458,14 @@ public class UserManager {
 
         } catch (SQLException e) {
             medicalRecord = "No records found";
+            e.printStackTrace();
         }
         return medicalRecord;
     }
     public boolean createMedicalRecord(int medicalId, String diagnosis, String description, String drugName) {
 
         boolean success = false;
+        String recordId = "";
         try {
             String query = "{call insert_medical_record( ?, ?, ? ,?, ?)}";
 
@@ -473,35 +475,35 @@ public class UserManager {
             statement.setInt(2, selectedDoctor.getEmployeeId());
             statement.setString(3, diagnosis);
             statement.setString(4, description);
-            statement.setString(5, "");
+            statement.registerOutParameter(5, Types.VARCHAR);
 
+            statement.execute();
+            recordId = statement.getString(5);
+            System.out.println(recordId);
 
-            ResultSet resultSet = statement.executeQuery();
-            String recordId = "";
-            while (resultSet.next()) {
-                recordId = resultSet.getString(1);
-            }
             statement.close();
-            query = "{call insert_drug(?, ?)}";
+        } catch (SQLException e) {
+            success = false;
+            e.printStackTrace();
+        }
+        try{
 
-            statement = conn.prepareCall(query);
+            String query = "{call insert_drug(?, ?)}";
+
+            CallableStatement statement = conn.prepareCall(query);
 
             statement.setString(1, recordId);
             statement.setString(2, drugName);
 
-            success = true;
+            statement.execute();
+
             statement.close();
+            success = true;
 
         } catch (SQLException e) {
             success = false;
             e.printStackTrace();
         }
-
-
-
-
-
-
 
         return success;
     }
