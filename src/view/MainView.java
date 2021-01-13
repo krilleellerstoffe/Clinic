@@ -189,6 +189,11 @@ public class MainView {
         String description = Utilities.getString();
         return description;
     }
+    public String getDrugName() {
+        System.out.println("Please enter prescribed drug:");
+        String drugName = Utilities.getString();
+        return drugName;
+    }
     //User messages
     public void loginFailed() {
 
@@ -198,4 +203,6 @@ public class MainView {
 
         System.out.println(string);
     }
+
+
 }
