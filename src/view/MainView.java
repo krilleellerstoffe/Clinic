@@ -161,7 +161,7 @@ public class MainView {
         return choice;
     }
     public String getAppointmentTime() {
-        System.out.printf("Which time? (XX:XX)");
+        System.out.printf("Which time? (HHMM)");
         String choice = Utilities.getTime();
         return choice;
     }
